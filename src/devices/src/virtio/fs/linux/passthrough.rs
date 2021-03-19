@@ -665,8 +665,8 @@ fn forget_one(
             // Synchronizes with the acquire load in `do_lookup`.
             if data
                 .refcount
-                .compare_and_swap(refcount, new_count, Ordering::Release)
-                == refcount
+                .compare_exchange(refcount, new_count, Ordering::Release, Ordering::Relaxed)
+                == Ok(refcount)
             {
                 if new_count == 0 {
                     // We just removed the last refcount for this inode. There's no need for an
